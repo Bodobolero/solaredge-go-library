@@ -94,3 +94,32 @@ To query energydetails for the last 30 minutes you can do
         {
  ...
 ~~~
+
+Or some power details:
+
+~~~
+❯ solaredge site powerdetails --since 60m
+{
+  "timeUnit": "QUARTER_OF_AN_HOUR",
+  "unit": "W",
+  "meters": [
+    {
+      "type": "FeedIn",
+      "values": [
+        {
+          "date": "2022-03-18 16:15:00",
+          "value": 2037.3552
+        },
+        {
+          "date": "2022-03-18 16:30:00",
+          "value": 1607.2875
+        },
+        {
+          "date": "2022-03-18 16:45:00",
+          "value": 928.3824
+        },
+        {
+          "date": "2022-03-18 17:00:00",
+          "value": 516.12494
+...
+~~~
