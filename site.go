@@ -96,3 +96,13 @@ func (sc *SiteClient) EnergyDetails(tu TimeUnit, start, end time.Time) (*Engergy
 	}
 	return &res, sc.Get(fmt.Sprintf("/site/%s/energyDetails.json", sc.siteid), parms, &details)
 }
+
+func (sc *SiteClient) PowerFlow() (*PowerFlow, error) {
+	var res PowerFlow
+	details := struct {
+		Flow *PowerFlow `json:"siteCurrentPowerFlow"`
+	}{
+		Flow: &res,
+	}
+	return &res, sc.Get(fmt.Sprintf("/site/%s/currentPowerFlow.json", sc.siteid), nil, &details)
+}

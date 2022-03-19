@@ -134,3 +134,27 @@ type EngergyDetails struct {
 	Unit     string         `json:"unit"`
 	Meters   []MeteredValue `json:"meters"`
 }
+
+type PowerFlowConnection struct {
+	From string `json:"from"`
+	To   string `json:"to"`
+}
+
+type PowerFlowStatus struct {
+	Status       string  `json:"status"`
+	CurrentPower float64 `json:"currentPower"`
+}
+
+type StoragePowerFlowStatus struct {
+	PowerFlowStatus
+	ChargeLevel int  `json:"chargeLevel"`
+	Critical    bool `json:"critical"`
+}
+type PowerFlow struct {
+	Unit        string                 `json:"unit"`
+	Connections []PowerFlowConnection  `json:"connections,omitempty"`
+	Grid        PowerFlowStatus        `json:"GRID,omitempty"`
+	Load        PowerFlowStatus        `json:"LOAD,omitempty"`
+	PV          PowerFlowStatus        `json:"PV,omitempty"`
+	Storage     StoragePowerFlowStatus `json:"STORAGE,omitempty"`
+}

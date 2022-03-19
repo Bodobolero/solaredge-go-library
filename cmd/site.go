@@ -64,6 +64,13 @@ var (
 			siteEnergyDetails(unit, start, end)
 		},
 	}
+	powerflow = &cobra.Command{
+		Use:   "powerflow",
+		Short: "query current power flow",
+		Run: func(cmd *cobra.Command, args []string) {
+			sitePowerflow()
+		},
+	}
 )
 
 func getStartEnd() (time.Time, time.Time) {
@@ -146,6 +153,14 @@ func siteEnergyDetails(unit solaredge.TimeUnit, start, end time.Time) {
 	det, err := siteClient().EnergyDetails(unit, start, end)
 	if err != nil {
 		log.Fatalf("cannot query energy details: %v", err)
+	}
+	fmt.Printf("%s", dumpAsJson(det))
+}
+
+func sitePowerflow() {
+	det, err := siteClient().PowerFlow()
+	if err != nil {
+		log.Fatalf("cannot query powerflow: %v", err)
 	}
 	fmt.Printf("%s", dumpAsJson(det))
 }
