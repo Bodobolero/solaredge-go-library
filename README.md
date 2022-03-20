@@ -123,3 +123,41 @@ Or some power details:
           "value": 516.12494
 ...
 ~~~
+
+To query specific values, you can use `jq`:
+~~~
+❯ solaredge site powerflow | jq
+{
+  "unit": "kW",
+  "connections": [
+    {
+      "from": "LOAD",
+      "to": "Grid"
+    },
+    {
+      "from": "PV",
+      "to": "Load"
+    }
+  ],
+  "GRID": {
+    "status": "Active",
+    "currentPower": 0.23
+  },
+  "LOAD": {
+    "status": "Active",
+    "currentPower": 0.6
+  },
+  "PV": {
+    "status": "Active",
+    "currentPower": 0.83
+  },
+  "STORAGE": {
+    "status": "Idle",
+    "currentPower": 0,
+    "chargeLevel": 74,
+    "critical": false
+  }
+}
+❯ solaredge site powerflow | jq .STORAGE.chargeLevel
+74
+~~~
