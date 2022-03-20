@@ -71,6 +71,13 @@ var (
 			sitePowerflow()
 		},
 	}
+	overview = &cobra.Command{
+		Use:   "overview",
+		Short: "query site overview",
+		Run: func(cmd *cobra.Command, args []string) {
+			siteOverview()
+		},
+	}
 )
 
 func getStartEnd() (time.Time, time.Time) {
@@ -161,6 +168,14 @@ func sitePowerflow() {
 	det, err := siteClient().PowerFlow()
 	if err != nil {
 		log.Fatalf("cannot query powerflow: %v", err)
+	}
+	fmt.Printf("%s", dumpAsJson(det))
+}
+
+func siteOverview() {
+	det, err := siteClient().Overview()
+	if err != nil {
+		log.Fatalf("cannot query overview: %v", err)
 	}
 	fmt.Printf("%s", dumpAsJson(det))
 }

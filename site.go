@@ -106,3 +106,13 @@ func (sc *SiteClient) PowerFlow() (*PowerFlow, error) {
 	}
 	return &res, sc.Get(fmt.Sprintf("/site/%s/currentPowerFlow.json", sc.siteid), nil, &details)
 }
+
+func (sc *SiteClient) Overview() (*OverviewData, error) {
+	var res OverviewData
+	details := struct {
+		Data *OverviewData `json:"overview"`
+	}{
+		Data: &res,
+	}
+	return &res, sc.Get(fmt.Sprintf("/site/%s/overview.json", sc.siteid), nil, &details)
+}

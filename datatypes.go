@@ -158,3 +158,21 @@ type PowerFlow struct {
 	PV          PowerFlowStatus        `json:"PV,omitempty"`
 	Storage     StoragePowerFlowStatus `json:"STORAGE,omitempty"`
 }
+
+type OverviewEnergy struct {
+	Energy float64 `json:"energy"`
+}
+
+type OverviewPower struct {
+	Power float64 `json:"power"`
+}
+
+type OverviewData struct {
+	LastUpdateTime SETime         `json:"lastUpdateTime"`
+	LifetimeData   OverviewEnergy `json:"lifeTimeData"`
+	LastYearData   OverviewEnergy `json:"lastYearData"`
+	LastMonthData  OverviewEnergy `json:"lastMonthData"`
+	LastDayData    OverviewEnergy `json:"lastDayData"`
+	CurrentPower   OverviewPower  `json:"currentPower"`
+	MeasuredBy     string         `json:"measuredBy"`
+}
