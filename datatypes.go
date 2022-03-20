@@ -151,12 +151,12 @@ type StoragePowerFlowStatus struct {
 	Critical    bool `json:"critical"`
 }
 type PowerFlow struct {
-	Unit        string                 `json:"unit"`
-	Connections []PowerFlowConnection  `json:"connections,omitempty"`
-	Grid        PowerFlowStatus        `json:"GRID,omitempty"`
-	Load        PowerFlowStatus        `json:"LOAD,omitempty"`
-	PV          PowerFlowStatus        `json:"PV,omitempty"`
-	Storage     StoragePowerFlowStatus `json:"STORAGE,omitempty"`
+	Unit        string                  `json:"unit"`
+	Connections []PowerFlowConnection   `json:"connections,omitempty"`
+	Grid        PowerFlowStatus         `json:"GRID,omitempty"`
+	Load        PowerFlowStatus         `json:"LOAD,omitempty"`
+	PV          *PowerFlowStatus        `json:"PV,omitempty"`
+	Storage     *StoragePowerFlowStatus `json:"STORAGE,omitempty"`
 }
 
 type OverviewEnergy struct {
