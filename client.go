@@ -3,6 +3,7 @@ package solaredge
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 )
@@ -77,5 +78,16 @@ func (sec *SEClient) get(path string, parms url.Values, target any) error {
 		return fmt.Errorf("cannot invoke request: %w", err)
 	}
 	defer rsp.Body.Close()
-	return json.NewDecoder(rsp.Body).Decode(target)
+	data, err := ioutil.ReadAll(rsp.Body)
+	if err != nil {
+		return fmt.Errorf("cannot read body response: %w", err)
+	}
+	if rsp.StatusCode/100 != 2 {
+		return fmt.Errorf("responsecode %d, data: %s", rsp.StatusCode, string(data))
+	}
+	err = json.Unmarshal(data, target)
+	if err != nil {
+		return fmt.Errorf("cannot parse %q as json: %w", string(data), err)
+	}
+	return nil
 }
