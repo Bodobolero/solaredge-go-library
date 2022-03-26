@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"time"
+
+	"github.com/rs/zerolog/log"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -83,20 +84,20 @@ var (
 func getStartEnd() (time.Time, time.Time) {
 	dur, err := time.ParseDuration(since)
 	if err != nil {
-		log.Fatalf("cannot parse duration %q: %v", since, err)
+		log.Fatal().Err(err).Str("duration", since).Msg("cannot parse duration")
 	}
 	start := time.Now().Add(dur * -1)
 	end := time.Now()
 	if startTime != "" {
 		start, err = time.Parse(time.RFC3339, startTime)
 		if err != nil {
-			log.Fatalf("cannot parse %q as %q: %v", startTime, time.RFC3339, err)
+			log.Fatal().Err(err).Str("start", startTime).Msg("cannot parse starttime")
 		}
 	}
 	if endTime != "" {
 		end, err = time.Parse(time.RFC3339, endTime)
 		if err != nil {
-			log.Fatalf("cannot parse %q as %q: %v", endTime, time.RFC3339, err)
+			log.Fatal().Err(err).Str("end", endTime).Msg("cannot parse endtime")
 		}
 	}
 	return start, end
@@ -119,7 +120,7 @@ func init() {
 func siteClient() *solaredge.SiteClient {
 	sic, err := solaredge.SiteFromIDs(viper.GetString("apikey"), viper.GetString("siteid"), solaredge.WithBaseURL(viper.GetString("baseurl")))
 	if err != nil {
-		log.Fatalf("cannot create client %v", err)
+		log.Fatal().Err(err).Msg("cannot create client")
 	}
 	return sic
 }
@@ -127,7 +128,7 @@ func siteClient() *solaredge.SiteClient {
 func siteDetails() {
 	det, err := siteClient().Details()
 	if err != nil {
-		log.Fatalf("cannot query details: %v", err)
+		log.Fatal().Err(err).Msg("cannot query details")
 	}
 	fmt.Printf("%s", dumpAsJson(det))
 }
@@ -135,7 +136,7 @@ func siteDetails() {
 func siteInventory() {
 	det, err := siteClient().Inventory()
 	if err != nil {
-		log.Fatalf("cannot query inventory: %v", err)
+		log.Fatal().Err(err).Msg("cannot query inventory")
 	}
 	fmt.Printf("%s", dumpAsJson(det))
 }
@@ -143,7 +144,7 @@ func siteInventory() {
 func siteStorageData(start, end time.Time) {
 	det, err := siteClient().StorageData(start, end)
 	if err != nil {
-		log.Fatalf("cannot query storage data: %v", err)
+		log.Fatal().Err(err).Msg("cannot query storage data")
 	}
 	fmt.Printf("%s", dumpAsJson(det))
 }
@@ -151,7 +152,7 @@ func siteStorageData(start, end time.Time) {
 func sitePowerDetails(start, end time.Time) {
 	det, err := siteClient().PowerDetails(start, end)
 	if err != nil {
-		log.Fatalf("cannot query power details: %v", err)
+		log.Fatal().Err(err).Msg("cannot query power details")
 	}
 	fmt.Printf("%s", dumpAsJson(det))
 }
@@ -159,7 +160,7 @@ func sitePowerDetails(start, end time.Time) {
 func siteEnergyDetails(unit solaredge.TimeUnit, start, end time.Time) {
 	det, err := siteClient().EnergyDetails(unit, start, end)
 	if err != nil {
-		log.Fatalf("cannot query energy details: %v", err)
+		log.Fatal().Err(err).Msg("cannot query energy details")
 	}
 	fmt.Printf("%s", dumpAsJson(det))
 }
@@ -167,7 +168,7 @@ func siteEnergyDetails(unit solaredge.TimeUnit, start, end time.Time) {
 func sitePowerflow() {
 	det, err := siteClient().PowerFlow()
 	if err != nil {
-		log.Fatalf("cannot query powerflow: %v", err)
+		log.Fatal().Err(err).Msg("cannot query powerflow")
 	}
 	fmt.Printf("%s", dumpAsJson(det))
 }
@@ -175,7 +176,7 @@ func sitePowerflow() {
 func siteOverview() {
 	det, err := siteClient().Overview()
 	if err != nil {
-		log.Fatalf("cannot query overview: %v", err)
+		log.Fatal().Err(err).Msg("cannot query overview")
 	}
 	fmt.Printf("%s", dumpAsJson(det))
 }

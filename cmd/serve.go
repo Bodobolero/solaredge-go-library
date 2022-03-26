@@ -2,12 +2,13 @@ package main
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
+	"os"
 	"strings"
 	"sync"
 	"time"
 
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"gitlab.com/ulrichSchreiner/solaredge"
@@ -56,7 +57,7 @@ func newSolaredgeService(sc *solaredge.SiteClient) *solaredgeService {
 }
 
 func (ses *solaredgeService) listen(l string) {
-	http.ListenAndServe(listen, nil)
+	_ = http.ListenAndServe(listen, nil)
 }
 
 func (ses *solaredgeService) fetchPowerFlow() {
@@ -64,9 +65,11 @@ func (ses *solaredgeService) fetchPowerFlow() {
 	defer ses.lock.Unlock()
 	det, err := ses.site.PowerFlow()
 	if err != nil {
-		log.Fatalf("cannot query powerflow: %v", err)
+		log.Error().Err(err).Msg("cannot query powerflow")
 	} else {
-		log.Printf("fetched new powerflow: %+v", *det)
+		log.Info().
+			Interface("powerflow", *det).
+			Msg("fetche new powerflow")
 		ses.currentPowerFlow = *det
 	}
 }
@@ -76,9 +79,11 @@ func (ses *solaredgeService) fetchOverview() {
 	defer ses.lock.Unlock()
 	det, err := ses.site.Overview()
 	if err != nil {
-		log.Fatalf("cannot query overview: %v", err)
+		log.Error().Err(err).Msg("cannot query overview")
 	} else {
-		log.Printf("fetched new overview: %+v", *det)
+		log.Info().
+			Interface("overview", *det).
+			Msg("fetched new overview")
 		ses.currentOverview = *det
 	}
 }
@@ -106,7 +111,7 @@ func (ses *solaredgeService) sitePowerFlow(rw http.ResponseWriter, rq *http.Requ
 	defer ses.lock.RUnlock()
 
 	rw.Header().Add("content-type", "application/json")
-	json.NewEncoder(rw).Encode(ses.currentPowerFlow)
+	_ = json.NewEncoder(rw).Encode(ses.currentPowerFlow)
 }
 
 func (ses *solaredgeService) siteFlow(rw http.ResponseWriter, rq *http.Request) {
@@ -114,7 +119,7 @@ func (ses *solaredgeService) siteFlow(rw http.ResponseWriter, rq *http.Request) 
 	defer ses.lock.RUnlock()
 
 	rw.Header().Add("content-type", "application/json")
-	json.NewEncoder(rw).Encode(genFlowData(ses.currentPowerFlow))
+	_ = json.NewEncoder(rw).Encode(genFlowData(ses.currentPowerFlow))
 }
 
 func (ses *solaredgeService) siteOverview(rw http.ResponseWriter, rq *http.Request) {
@@ -122,13 +127,14 @@ func (ses *solaredgeService) siteOverview(rw http.ResponseWriter, rq *http.Reque
 	defer ses.lock.RUnlock()
 
 	rw.Header().Add("content-type", "application/json")
-	json.NewEncoder(rw).Encode(ses.currentOverview)
+	_ = json.NewEncoder(rw).Encode(ses.currentOverview)
 }
 
 func serveService(siteid string) {
 	sic, err := solaredge.SiteFromIDs(viper.GetString("apikey"), siteid, solaredge.WithBaseURL(viper.GetString("baseurl")))
 	if err != nil {
-		log.Fatalf("cannot create client %v", err)
+		log.Error().Err(err).Msg("cannot create client")
+		os.Exit(1)
 	}
 	srv := newSolaredgeService(sic)
 	srv.listen(listen)
