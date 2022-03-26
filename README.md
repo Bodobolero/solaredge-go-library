@@ -161,3 +161,41 @@ To query specific values, you can use `jq`:
 ❯ solaredge site powerflow | jq .STORAGE.chargeLevel
 74
 ~~~
+
+## Data service
+
+You can start the embedded server to publish some data via http as JSON values.
+So starting the service with
+~~~
+❯ solaredge serve $SOLAREDGE_SITEID
+~~~
+Runs a daemon which fetches some data from solaredge regularly. The powerflow
+data is fetched every 60sec while the overview is fetched only every 15min. You
+can change these intervalls as parameters.
+
+To query the data you can do a simple GET request:
+~~~
+❯ xh localhost:7777/flow
+HTTP/1.1 200 OK
+Content-Length: 41
+Content-Type: application/json
+Date: Sat, 26 Mar 2022 18:57:09 GMT
+
+{
+    "pv": 0,
+    "grid": 0,
+    "battery": 900,
+    "soc": 50
+}
+~~~
+
+And you will receive the values
+
+ - `pv`<br>
+   the generated power
+ - `grid`<br>
+   the power which goes into the grid or is consumed
+ - `battery`<br>
+   the current power of the battery
+ - `soc`<br>
+   the state of charge of the battery
