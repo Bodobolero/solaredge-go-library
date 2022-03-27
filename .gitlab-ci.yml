@@ -1,0 +1,6 @@
+image: registry.gitlab.com/ulrichschreiner/kaniko-builder:debug
+
+build:
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - kaniko --destination $CI_REGISTRY_IMAGE:latest
