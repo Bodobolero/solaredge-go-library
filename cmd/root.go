@@ -24,8 +24,7 @@ var (
 )
 
 func init() {
-	t := time.Now()
-	zone, _ := t.Zone()
+	zone := time.Local.String()
 
 	cobra.OnInitialize(initConfig)
 

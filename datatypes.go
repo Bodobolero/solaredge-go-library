@@ -26,8 +26,7 @@ var (
 )
 
 func init() {
-	t := time.Now()
-	SiteZone, _ = t.Zone()
+	SiteZone = time.Local.String()
 }
 
 // SETime supports the datetime format from solaredge to be interpreted as a normal go
