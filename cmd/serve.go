@@ -118,7 +118,7 @@ func (ses *solaredgeService) fetchPowerFlow() {
 	} else {
 		log.Info().
 			Interface("powerflow", *det).
-			Msg("fetche new powerflow")
+			Msg("fetched new powerflow")
 		ses.currentPowerFlow = *det
 	}
 
