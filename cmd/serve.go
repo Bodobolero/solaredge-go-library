@@ -21,7 +21,7 @@ var (
 	flow     time.Duration
 	poll     time.Duration
 	serveCmd = &cobra.Command{
-		Use:   "serve [siteid]",
+		Use:   "serve",
 		Short: "starts a http service for a site",
 		Run: func(cmd *cobra.Command, args []string) {
 			siteid := viper.GetString("siteid")
@@ -256,14 +256,15 @@ type flowdata struct {
 func genFlowData(pf solaredge.PowerFlow) flowdata {
 	battscale := -1.0
 	unitscale := unitFactor(pf.Unit)
-	if pf.Storage.Status == "Discharging" || pf.Storage.Status == "Idle" {
-		battscale = 1.0
-	}
+
 	var res flowdata
 	if pf.PV != nil {
 		res.PV = pf.PV.CurrentPower * unitscale
 	}
 	if pf.Storage != nil {
+		if pf.Storage.Status == "Discharging" || pf.Storage.Status == "Idle" {
+			battscale = 1.0
+		}
 		res.Battery = pf.Storage.CurrentPower * battscale * unitscale
 		res.SoC = float64(pf.Storage.ChargeLevel)
 	}
