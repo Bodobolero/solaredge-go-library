@@ -167,7 +167,8 @@ To query specific values, you can use `jq`:
 You can start the embedded server to publish some data via http as JSON values.
 So starting the service with
 ~~~
-❯ solaredge serve $SOLAREDGE_SITEID
+❯ export SOLAREDGE_SITEID=xxxxx
+❯ solaredge serve
 ~~~
 Runs a daemon which fetches some data from solaredge regularly. The powerflow
 data is fetched every 60sec while the overview is fetched only every 15min. You
