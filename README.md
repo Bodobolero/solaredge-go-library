@@ -2,6 +2,10 @@
 
 simple library/tool to query solaredge webservice API
 
+forked from Ulrich Schreiner's
+
+https://gitlab.com/ulrichSchreiner/solaredge
+
 ## Usage
 
 Export your API-KEY and your SITE-ID:
