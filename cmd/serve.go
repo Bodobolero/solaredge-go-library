@@ -40,7 +40,7 @@ var (
 
 func init() {
 	serveCmd.PersistentFlags().StringVar(&listen, "listen", "localhost:7777", "the listen address for the service")
-	serveCmd.PersistentFlags().DurationVar(&flow, "flow", 60*time.Second, "the poll duration for the powerflow call")
+	serveCmd.PersistentFlags().DurationVar(&flow, "flow", 180*time.Second, "the poll duration for the powerflow call")
 	serveCmd.PersistentFlags().DurationVar(&poll, "poll", 15*time.Minute, "the poll duration for standard API calls")
 }
 
@@ -159,7 +159,8 @@ func (ses *solaredgeService) fetchSiteDetails() error {
 }
 
 func (ses *solaredgeService) start() {
-	flowtick := time.Tick(ses.flowTimer)
+	currentFlowInterval := 10 * time.Second
+	flowticker := time.NewTicker(currentFlowInterval)
 	polltick := time.Tick(ses.pollTimer)
 
 	// first initialize our state
@@ -168,7 +169,21 @@ func (ses *solaredgeService) start() {
 
 	for {
 		select {
-		case <-flowtick:
+		case <-flowticker.C:
+			hour := time.Now().Hour()
+			log.Info().Msg("current hour: " + fmt.Sprint(hour))
+			// we want to poll more often during the day to stay within our quota of 300 requests per day
+			if hour >= 8 && hour < 20 && currentFlowInterval != ses.flowTimer { // If it's day and flowTimer is not set to flowtick
+				flowticker.Stop()
+				currentFlowInterval = ses.flowTimer
+				flowticker = time.NewTicker(currentFlowInterval)
+				log.Info().Msg("new flow poll interval set to : " + fmt.Sprint(currentFlowInterval))
+			} else if hour >= 18 || hour < 6 && currentFlowInterval != ses.pollTimer { // If it's night and flowTimer is not set to nightInterval
+				flowticker.Stop()
+				currentFlowInterval = ses.pollTimer
+				flowticker = time.NewTicker(currentFlowInterval)
+				log.Info().Msg("new flow poll interval set to : " + fmt.Sprint(currentFlowInterval))
+			}
 			ses.fetchPowerFlow()
 		case <-polltick:
 			ses.fetchOverview()
