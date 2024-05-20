@@ -178,7 +178,7 @@ func (ses *solaredgeService) start() {
 				currentFlowInterval = ses.flowTimer
 				flowticker = time.NewTicker(currentFlowInterval)
 				log.Info().Msg("new flow poll interval set to : " + fmt.Sprint(currentFlowInterval))
-			} else if hour >= 18 || hour < 6 && currentFlowInterval != ses.pollTimer { // If it's night and flowTimer is not set to nightInterval
+			} else if hour >= 20 || hour < 6 && currentFlowInterval != ses.pollTimer { // If it's night and flowTimer is not set to nightInterval
 				flowticker.Stop()
 				currentFlowInterval = ses.pollTimer
 				flowticker = time.NewTicker(currentFlowInterval)
