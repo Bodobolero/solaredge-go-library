@@ -6,6 +6,11 @@ forked from Ulrich Schreiner's
 
 https://gitlab.com/ulrichSchreiner/solaredge
 
+This private fork is hosted https://github.com/Bodobolero/solaredge-go-library where I made the following changes
+- polling interval during the night is 15 minutes
+- polling interval during the day (when solarpower is active) is 3 minutes
+- this is to ensure I stay within the Solaredge API request quota of 300/day
+
 ## Usage
 
 Export your API-KEY and your SITE-ID:
