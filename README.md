@@ -1,3 +1,8 @@
+# IMPORTANT NOTE
+
+*This API is deprecated because it uses SolarEdge V1 API which stopped working Nov. 3 2026.
+Ulrich Schreiner does not plan to maintain and upgrade to V2. So I migrated my local installation to retrieving the values from the inverter using modbus TCP and no longer use this library*
+
 # solaredge
 
 simple library/tool to query solaredge webservice API
